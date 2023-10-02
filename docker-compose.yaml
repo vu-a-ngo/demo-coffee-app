@@ -1,0 +1,29 @@
+version: '3.5'
+
+networks:
+  coffee101:
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:14
+    environment:
+      POSTGRES_DB: coffee101
+      POSTGRES_USER: dbadmin
+      POSTGRES_PASSWORD: demo
+      PGDATA: /var/lib/pgsql/14/data
+    volumes:
+      - postgres:/var/lib/pgsql/14/data
+    ports:
+      - "5432:5432"
+    networks:
+      - coffee101
+  redis:
+    image: redis:6.0-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - coffee101
+
+volumes:
+  postgres:

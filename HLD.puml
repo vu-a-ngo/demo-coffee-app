@@ -1,0 +1,82 @@
+@startuml
+!define RECTANGLE class
+!define END_RECTANGLE -[#000000]->
+
+package "Customer App" {
+    RECTANGLE CustomerApp {
+        + Register()
+        + LogIn()
+        + PlaceOrder()
+        + ViewOrderHistory()
+    }
+}
+
+package "Manager App" {
+    RECTANGLE ManagerApp {
+        + SetUpShop()
+        + ManageMenu()
+        + ManagePromotions()
+        + ManageQueue()
+    }
+}
+
+package "Backend Services" {
+    RECTANGLE UserService {
+        + RegisterUser()
+        + AuthenticateUser()
+    }
+
+    RECTANGLE OrderService {
+        + ProcessOrder()
+        + ApplyPromotion()
+    }
+
+    RECTANGLE ShopService {
+        + CreateShop()
+        + UpdateShop()
+        + CreateMenu()
+        + UpdateMenu()
+    }
+
+    RECTANGLE QueueService {
+        + ViewQueue()
+        + QueuePush()
+        + QueuePop()
+        + TakeFromQueue()
+    }
+
+    RECTANGLE PromotionService {
+        + AddPromotion()
+        + ViewPromotion()
+        + UpdatePromotion()
+        + DeletePromotion()
+        + StartPromotion()
+        + EndPromotion()
+    }
+}
+
+database "PostgreSQL Database" {
+}
+
+database "Redis Cache" {
+}
+
+CustomerApp -- UserService: HTTP
+CustomerApp -- OrderService: HTTP
+CustomerApp -- QueueService: WebSocket
+
+ManagerApp -- ShopService: HTTP
+ManagerApp -- QueueService: WebSocket
+ManagerApp -- PromotionService: HTTP
+
+UserService -- "PostgreSQL Database": JDBC
+OrderService -- "PostgreSQL Database": JDBC
+ShopService -- "PostgreSQL Database": JDBC
+PromotionService -- "PostgreSQL Database": JDBC
+
+QueueService -- "Redis Cache"
+UserService -- "Redis Cache"
+OrderService -- "Redis Cache"
+ShopService -- "Redis Cache"
+
+@enduml
